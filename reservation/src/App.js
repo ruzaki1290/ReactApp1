@@ -1,6 +1,6 @@
 import React, { Component } from 'react';
-import logo from './logo.svg';
 import './App.css';
+import 'bootstrap/dist/css/bootstrap.min.css';
 
 const conservationAreas = ['Area 1', 'Area 2', 'Area 3', 'Area 4'];
 const timeSlots = [
@@ -40,67 +40,65 @@ export default class App extends Component {
     const { selectedArea, selectedTimeSlot, reservations } = this.state;
 
     return (
-      <div className="App">
-        <h4 className="bg-primary text-white text-center p-2">
-          Reservation System
-        </h4>
-        <form onSubmit={this.handleSubmit}>
-          <div>
-            <label>
-              Select Conservation Area:
-              <select value={selectedArea} onChange={this.handleAreaChange}>
-                <option value="">Select an area</option>
-                {conservationAreas.map((area) => (
-                  <option key={area} value={area}>{area}</option>
-                ))}
-              </select>
-            </label>
+      <div className="container-fluid">
+        <div className="row">
+          <div className="bg-dark text-white p-2 text-center">
+            <span className="navbar-brand ml-2">RESERVATION SYSTEM</span>
           </div>
-          <div>
-            <label>
-              Select Time Slot:
-              <select value={selectedTimeSlot} onChange={this.handleTimeSlotChange}>
-                <option value="">Select a time slot</option>
-                {timeSlots.map((slot) => (
-                  <option key={slot} value={slot}>{slot}</option>
-                ))}
-              </select>
-            </label>
+        </div>
+        <div className="row text-white">
+          <div className="col-3 p-2">
+            <div className="d-grid gap-2">
+              <button type="button" className="btn btn-outline-primary">
+                Home
+              </button>
+              {conservationAreas.map((area) => (
+                <button
+                  key={area}
+                  type="button"
+                  className={`btn btn-outline-primary ${selectedArea === area ? 'active' : ''}`}
+                  onClick={() => this.setState({ selectedArea: area })}
+                >
+                  {area}
+                </button>
+              ))}
+            </div>
           </div>
-          <button type="submit">Reserve</button>
-        </form>
-        <h5>Reservations:</h5>
-        <ul>
-          {reservations.map((reservation, index) => (
-            <li key={index}>{reservation.area} - {reservation.timeSlot}</li>
-          ))}
-        </ul>
+          <div className="col-9 p-2 text-dark">
+            <form onSubmit={this.handleSubmit} className="reservation-form">
+              <div>
+                <label>
+                  <h4>Select Time Slot:</h4>
+                  <ul className="time-slot-list">
+                    {timeSlots.map((slot) => (
+                      <li key={slot}>
+                        <input
+                          type="radio"
+                          name="timeSlot"
+                          value={slot}
+                          checked={selectedTimeSlot === slot}
+                          onChange={this.handleTimeSlotChange}
+                        />
+                        {slot}
+                      </li>
+                    ))}
+                  </ul>
+                </label>
+              </div>
+              <button type="submit" className="btn btn-primary mt-2">Reserve</button>
+            </form>
+            <hr />
+            <h4>Reservations:</h4>
+            <ul className="list-group">
+              {reservations.map((reservation, index) => (
+                <li key={index} className="list-group-item">
+                  {reservation.area} - {reservation.timeSlot}
+                </li>
+              ))}
+            </ul>
+          </div>
+        </div>
       </div>
     );
   }
 }
-
-/*
-function App() {
-  return (
-    <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.js</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
-      </header>
-    </div>
-  );
-}
-
-export default App;
-*/
