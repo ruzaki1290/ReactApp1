@@ -27,17 +27,31 @@ export default class App extends Component {
   handleSubmit = (event) => {
     event.preventDefault();
     const { selectedArea, selectedTimeSlot, reservations } = this.state;
-    if (selectedArea && selectedTimeSlot) {
+  
+    const isDuplicate = reservations.some(
+      (reservation) => reservation.area === selectedArea && reservation.timeSlot === selectedTimeSlot
+    );
+
+    if (isDuplicate) {
+      this.setState({ errorMessage: 'This time slot is already reserved for the selected area.' });
+    } else if (selectedArea && selectedTimeSlot) {
       this.setState({
         reservations: [...reservations, { area: selectedArea, timeSlot: selectedTimeSlot }],
         selectedArea: '',
-        selectedTimeSlot: ''
+        selectedTimeSlot: '',
+        errorMessage: ''
       });
     }
   };
 
+  handleDelete = (index) => {
+    const { reservations } = this.state;
+    const updatedReservations = reservations.filter((_, i) => i !== index);
+    this.setState({ reservations: updatedReservations });
+  };
+
   render() {
-    const { selectedArea, selectedTimeSlot, reservations } = this.state;
+    const { selectedArea, selectedTimeSlot, reservations, errorMessage } = this.state;
 
     return (
       <div className="container-fluid">
@@ -87,12 +101,20 @@ export default class App extends Component {
               </div>
               <button type="submit" className="btn btn-primary mt-2">Reserve</button>
             </form>
+            {errorMessage && <div className="alert alert-danger mt-2">{errorMessage}</div>}
             <hr />
             <h4>Reservations:</h4>
             <ul className="list-group">
               {reservations.map((reservation, index) => (
-                <li key={index} className="list-group-item">
-                  {reservation.area} - {reservation.timeSlot}
+                <li key={index} className="list-group-item d-flex justify-content-between align-items-center">
+                {reservation.area} - {reservation.timeSlot}
+                <button
+                  type="button"
+                  className="btn btn-danger btn-sm"
+                  onClick={() => this.handleDelete(index)}
+                >
+                  Delete
+                </button>
                 </li>
               ))}
             </ul>
